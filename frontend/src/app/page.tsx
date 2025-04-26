@@ -17,7 +17,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <motion.div
-        className="text-center max-w-2xl mt-[15vh]"
+        className="text-center max-w-2xl mt-[10vh]"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -30,20 +30,20 @@ export default function Home() {
         />
 
         <div className="w-full flex justify-center mt-8">
-          <HoverBorderGradient
-            as="a"
-            href="/brandgpt"
-            containerClassName=""
-            className="bg-gradient-to-br from-gray-900 to-black text-white px-6 py-3 text-base font-semibold flex items-center gap-2"
-          >
-            <span className="text-xl">🚀</span>
-            Try BrandGPT
-          </HoverBorderGradient>
+          <Link href="/brandgpt" passHref>
+            <HoverBorderGradient
+              containerClassName=""
+              className="bg-gradient-to-br from-gray-900 to-black text-white px-6 py-3 text-base font-semibold flex items-center gap-2"
+            >
+              <span className="text-xl">🚀</span>
+              Try BrandGPT
+            </HoverBorderGradient>
+          </Link>
         </div>
       </motion.div>
 
       {/* Features */}
-      <section className="mt-25 grid gap-10 sm:grid-cols-2 md:grid-cols-3 max-w-5xl w-full relative">
+      <section className="mt-25 font-bold grid gap-10 sm:grid-cols-2 md:grid-cols-3 max-w-5xl w-full relative">
         <FeatureCard
           icon={<Bot className="w-8 h-8 text-pink-500" />}
           title="Model Flexibility"

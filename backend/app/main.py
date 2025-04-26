@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware #Allows Frontend & Backend to communicate
 from app.schemas import GenerationRequest, GenerationResponse
-from backend.app.model_client import generate_text
+from app.model_client import generate_text
 
 app = FastAPI(title="BrandGPT Backend")
 
