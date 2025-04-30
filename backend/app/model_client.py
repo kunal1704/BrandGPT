@@ -1,7 +1,7 @@
 # backend/app/llama_client.py
 
 from app.schemas import GenerationRequest
-import requests
+from backend.app.mistral_local_client import generate_with_mistral
 
 # Lazy global for llama model
 # cache the model and tokenizer to avoid reloading them every time
@@ -34,16 +34,13 @@ def generate_text(req: GenerationRequest) -> str:
     model_name = req.model.strip().lower()
 
     if model_name == "mistral":
-        payload = {
-            "prompt": req.prompt,
-            "temperature": req.temperature,
-            "max_tokens": req.max_tokens,
-            "model": req.model
-        }
-        response = requests.post("http://inference:80/generate", json=payload)
-        response.raise_for_status()
-        return response.json()["response"]
+        return generate_with_mistral(
+            prompt=req.prompt,
+            max_tokens=req.max_tokens,
+            temperature=req.temperature
+    )
 
+    
     elif model_name == "llama3":
         load_llama3_gptq()
         inputs = llama_tokenizer(req.prompt, return_tensors="pt").to(llama_model.device)

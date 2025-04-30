@@ -4,11 +4,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { HoverBorderGradient } from "@/components/hover-border-gradient";
 import { TextGenerateEffect } from "@/components/text-generate-effect";
-import { TypewriterEffectSmooth } from "@/components/typewriter-effect";
 
 export default function BrandGPTPage() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [selectedModel, setSelectedModel] = useState("mistral");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerateText = async () => {
@@ -22,7 +22,7 @@ export default function BrandGPTPage() {
           prompt: input,
           temperature: 0.7,
           max_tokens: 300,
-          model: "mistral",
+          model: selectedModel,
         }),
       });
       if (!res.ok) throw new Error(await res.text());
@@ -38,50 +38,80 @@ export default function BrandGPTPage() {
 
   return (
     <main className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black text-white px-6 py-12">
-      {/* Hero */}
+      {/* Background Glow or Beams if desired */}
+      {/* Hero Title */}
       <motion.div
-        className="text-center max-w-2xl mx-auto mt-[10vh]"
+        className="text-center max-w-2xl mx-auto mt-[8vh]"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <TextGenerateEffect words="BrandGPT" />
-        <TypewriterEffectSmooth
-          words={[
-            { text: "AI-powered" },
-            { text: "personal branding" },
-            { text: "assistant" },
-          ]}
-          className="text-lg sm:text-xl md:text-2xl"
-        />
       </motion.div>
 
-      {/* Input */}
-      <section className="mt-10 flex justify-center">
-        <div className="w-full sm:w-1/2 md:w-1/3 bg-white/5 rounded-xl p-6 text-center backdrop-blur-sm">
-          <h2 className="text-xl font-semibold mb-4">Describe Your Brand</h2>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter your brand details..."
-            className="w-full h-32 p-4 rounded-lg text-black bg-white/50 mb-4"
-          />
-          <button
-            onClick={handleGenerateText}
-            disabled={isLoading}
-            className="bg-gradient-to-br from-gray-900 to-black text-white px-6 py-3 font-semibold rounded-lg"
-          >
-            {isLoading ? "Generating…" : "🚀 Generate Content"}
-          </button>
+      {/* Model + Prompt Form */}
+      <section className="mt-12 flex justify-center">
+        <div className="w-full sm:w-2/3 md:w-1/2 bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 shadow-xl space-y-6">
+          {/* Note */}
+          <p className="text-sm text-gray-300 text-left italic">
+            ⚠️ Choose <strong>Mistral</strong> if you're using a{" "}
+            <strong>CPU</strong>-only system. Choose <strong>LLaMA</strong> if
+            you have a <strong>GPU</strong>.
+          </p>
+
+          {/* Model Selector */}
+          <div className="text-left">
+            <label className="block text-md font-medium mb-2">
+              Select Model
+            </label>
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              className="w-full p-3 rounded-lg bg-white/50 text-black focus:outline-none"
+            >
+              <option value="mistral">Mistral 7B Instruct (CPU)</option>
+              <option value="llama">LLaMA 3 8B GPTQ (GPU)</option>
+            </select>
+          </div>
+
+          {/* Prompt Input */}
+          <div className="text-left">
+            <label className="block text-md font-medium mb-2 mt-4">
+              Your Brand Prompt
+            </label>
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Describe your brand, tone, goals..."
+              className="w-full h-32 p-4 rounded-lg text-black bg-white/50 focus:outline-none"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleGenerateText}
+              disabled={isLoading}
+              className="bg-gradient-to-br from-gray-900 to-black text-white px-6 py-3 font-semibold rounded-xl hover:shadow-md"
+            >
+              {isLoading ? "Generating…" : "🚀 Generate Content"}
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Output */}
+      {/* Output Section */}
       {output && (
-        <section className="mt-10 max-w-2xl mx-auto text-center">
+        <section className="mt-12 max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-semibold mb-4">Generated Content</h2>
-          <div className="p-6 bg-white/10 rounded-lg backdrop-blur-sm">
+          <div className="p-6 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10 shadow-md">
             <p className="whitespace-pre-wrap">{output}</p>
+            <button
+              onClick={() => navigator.clipboard.writeText(output)}
+              className="mt-4 text-sm text-blue-400 hover:underline"
+            >
+              📋 Copy Output
+            </button>
           </div>
         </section>
       )}
