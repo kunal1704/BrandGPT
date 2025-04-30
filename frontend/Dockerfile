@@ -1,11 +1,14 @@
-FROM node:18
+# frontend/Dockerfile
+FROM node:18-alpine
 
 WORKDIR /app
-# For better layer caching
-COPY package.json package-lock.json ./ 
+COPY package.json package-lock.json ./
+RUN npm ci
 
-RUN npm install
-RUN npm install @next/swc-linux-x64-gnu
+# copy and build
 COPY . .
-EXPOSE 3000
+RUN npm run build
 
+# For dev you could replace CMD with `npm run dev`
+EXPOSE 3000
+CMD ["npm", "run", "start"]
