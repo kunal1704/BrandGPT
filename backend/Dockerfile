@@ -1,20 +1,29 @@
-FROM python:3.10-slim
+FROM python:3.10  
 
-# Install system libs needed by llama.cpp
 RUN apt-get update && \
-    apt-get install -y libgomp1 && \
+    apt-get install -y \
+    libgomp1 \
+    libcurl4 \
+    build-essential \
+    cmake \
+    git \
+    curl \
+    wget && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy only Python requirements to install them
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-#  Copy backend code, llama.cpp binary, and model weights
+# Copy all backend code, including llama.cpp
 COPY . .
 
+# Build llama.cpp inside the container
+RUN cd llama.cpp && mkdir -p build && cd build && cmake .. && make -j
 
-# Expose and set a sensible default command
+ENV LD_LIBRARY_PATH="/app/llama.cpp/build/bin:${LD_LIBRARY_PATH}"
+
 EXPOSE 8000
+
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

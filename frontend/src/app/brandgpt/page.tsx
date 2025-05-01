@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { HoverBorderGradient } from "@/components/hover-border-gradient";
+import { HoverBorderGradient } from "@/components/Hover-Border/hover-border-gradient";
 import { TextGenerateEffect } from "@/components/text-generate-effect";
 
 export default function BrandGPTPage() {

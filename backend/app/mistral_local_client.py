@@ -7,19 +7,20 @@ from app.schemas import GenerationRequest
 # Resolve root of the project (BrandGPT/)
 ROOT_DIR = Path(__file__).resolve().parents[2]
 
-LLAMA_CLI_PATH = ROOT_DIR / "llama.cpp" / "build" / "bin" / "llama-cli"
+LLAMA_CLI_PATH = "/app/llama.cpp/build/bin/llama-cli"
+
 MODEL_PATH     = ROOT_DIR / "models"   / "mistral-7b-instruct-v0.1.Q4_K_M.gguf"
 
-def generate_with_mistral(req: GenerationRequest) -> str:
+def generate_with_mistral(prompt: str, max_tokens: int, temperature: float) -> str:
     """
     Runs local inference using llama.cpp with Mistral GGUF model on CPU.
     """
     command = [
         str(LLAMA_CLI_PATH),
         "-m", str(MODEL_PATH),
-        "-p", req.prompt,
-        "--temp", str(req.temperature),
-        "--n-predict", str(req.max_tokens)
+        "-p", prompt,
+        "--temp", str(temperature),
+        "--n-predict", str(max_tokens)
     ]
     try:
         out = subprocess.run(command, capture_output=True, text=True, check=True)

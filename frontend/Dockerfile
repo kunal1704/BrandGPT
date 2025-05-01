@@ -1,14 +1,23 @@
-# frontend/Dockerfile
+# Use the official Node.js image
 FROM node:18-alpine
 
+# Set the working directory for the app
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
 
-# copy and build
+# Copy package.json and package-lock.json first to leverage Docker cache
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
-RUN npm run build
 
-# For dev you could replace CMD with `npm run dev`
+# Build the Next.js app
+RUN npm run build  # Make sure you run the build here
+
+# Expose the default Next.js port
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+# Start the Next.js app in production mode
+CMD ["npm", "start"]

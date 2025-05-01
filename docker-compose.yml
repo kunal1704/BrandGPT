@@ -1,27 +1,37 @@
-
 services:
   brandgpt-app:
     build:
-      context: ./backend
+      context: /backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend:/app                              # your FastAPI code
-      - ./llama.cpp/build/bin/llama-cli:/app/llama.cpp/build/bin/llama-cli
-      - ./models:/app/models                       # Mistral GGUF weights
+      - ./backend:/app                              # FastAPI code
+      - ./models:/app/models                       # Models directory (Mistral GGUF weights)
     ports:
       - "8000:8000"
     environment:
       - PYTHONPATH=/app
-
-    gpus: all
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+      - MODEL=${MODEL:-mistral}  # Default to 'mistral' if not set
+      - USE_GPU=${USE_GPU:-false}  # Allow GPU or CPU usage based on choice
+    # Enable GPUs for LLaMA model, and leave it out for Mistral
+    #gpus: "all"  # Set to "all" to allow GPU usage if needed
+    command: >
+      sh -c "
+        if [ '$MODEL' = 'llama' ] && [ '$USE_GPU' = 'true' ]; then
+          echo 'Running LLaMA with GPU...';
+          uvicorn app.main:app --host 0.0.0.0 --port 8000;
+        elif [ '$MODEL' = 'mistral' ]; then
+          echo 'Running Mistral with CPU...';
+          uvicorn app.main:app --host 0.0.0.0 --port 8000;
+        else
+          echo 'Error: Unsupported model! Choose either llama or mistral.';
+        fi
+      "
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - ./frontend:/app
       - frontend_node_modules:/app/node_modules
     ports:
       - "3000:3000"

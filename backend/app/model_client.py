@@ -1,10 +1,10 @@
 # backend/app/llama_client.py
 
 from app.schemas import GenerationRequest
-from backend.app.mistral_local_client import generate_with_mistral
+from app.mistral_local_client import generate_with_mistral
 
 # Lazy global for llama model
-# cache the model and tokenizer to avoid reloading them every time
+# Cache the model and tokenizer to avoid reloading them every time
 
 llama_tokenizer = None
 llama_model = None
@@ -38,9 +38,8 @@ def generate_text(req: GenerationRequest) -> str:
             prompt=req.prompt,
             max_tokens=req.max_tokens,
             temperature=req.temperature
-    )
+        )
 
-    
     elif model_name == "llama3":
         load_llama3_gptq()
         inputs = llama_tokenizer(req.prompt, return_tensors="pt").to(llama_model.device)
