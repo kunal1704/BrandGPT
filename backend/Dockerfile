@@ -19,8 +19,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all backend code, including llama.cpp
 COPY . .
 
-# Build llama.cpp inside the container
-RUN cd llama.cpp && mkdir -p build && cd build && cmake .. && make -j
+# Build llama.cpp and ensure llama-cli is executable
+RUN cd llama.cpp && mkdir -p build && cd build && cmake .. && make -j && \
+    chmod +x /app/llama.cpp/build/bin/llama-cli
 
 ENV LD_LIBRARY_PATH="/app/llama.cpp/build/bin:${LD_LIBRARY_PATH}"
 

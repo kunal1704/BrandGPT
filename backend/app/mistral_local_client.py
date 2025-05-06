@@ -4,12 +4,9 @@ import subprocess
 from pathlib import Path
 from app.schemas import GenerationRequest
 
-# Resolve root of the project (BrandGPT/)
-ROOT_DIR = Path(__file__).resolve().parents[2]
+LLAMA_CLI_PATH = Path("/app/llama.cpp/build/bin/llama-cli")
 
-LLAMA_CLI_PATH = "/app/llama.cpp/build/bin/llama-cli"
-
-MODEL_PATH     = ROOT_DIR / "models"   / "mistral-7b-instruct-v0.1.Q4_K_M.gguf"
+MODEL_PATH = Path("/app/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf")
 
 def generate_with_mistral(prompt: str, max_tokens: int, temperature: float) -> str:
     """

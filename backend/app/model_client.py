@@ -40,7 +40,8 @@ def generate_text(req: GenerationRequest) -> str:
             temperature=req.temperature
         )
 
-    elif model_name == "llama3":
+    elif model_name == "llama":
+        model_name = "llama3"
         load_llama3_gptq()
         inputs = llama_tokenizer(req.prompt, return_tensors="pt").to(llama_model.device)
         outputs = llama_model.generate(**inputs, max_new_tokens=req.max_tokens)

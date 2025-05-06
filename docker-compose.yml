@@ -1,11 +1,10 @@
 services:
   brandgpt-app:
     build:
-      context: /backend
+      context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend:/app                              # FastAPI code
-      - ./models:/app/models                       # Models directory (Mistral GGUF weights)
+      - ./backend/models:/app/models # Copy the models to the container
     ports:
       - "8000:8000"
     environment:
